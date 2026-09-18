@@ -1,7 +1,4 @@
 .idea/
-.flake8
-poetry.lock
-pyproject.toml
 *.pyc
 venv/
 .venv/
