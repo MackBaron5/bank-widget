@@ -1,5 +1,5 @@
 def get_mask_card_number(card_number: str) -> str:
-
+    """Маскирует номер банковской карты, остовляя видимыми только начало и конец."""
     if len(card_number) != 16 or not card_number.isdigit():
         return "Некорректный номер карты"
 
@@ -12,7 +12,7 @@ def get_mask_card_number(card_number: str) -> str:
 
 
 def get_mask_account(account_number: str) -> str:
-
+    """Маскирует номер счета, остовляя видимыми только последние 4 цифры"""
     if len(account_number) < 4 or not account_number.isdigit():
         return "Некорректный номер счета"
 
