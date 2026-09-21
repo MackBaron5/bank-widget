@@ -4,10 +4,11 @@ from datetime import datetime
 
 def mask_account_card(info: str) -> str:
     """Маскирует номер карты или счета в зависимости от типа входных данных"""
+    if not info:
+        return "Некоректные данные"
+
     parts = info.split()
-
     number = parts[-1]
-
     name = " ".join(parts[:-1])
 
     if name.lower() == "счет":
