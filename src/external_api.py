@@ -1,4 +1,5 @@
 import os
+
 import requests
 from dotenv import load_dotenv
 
@@ -27,7 +28,10 @@ def convert_currency(transaction: dict) -> float:
     # Делаем запрос к API для USD и EUR
     if currency in ["USD", "EUR"]:
         # Проверенный URL с явной передачей заголовка apikey
-        url = f"https://apilayer.com{currency}&amount={amount}"
+        url = (
+            f"https://apilayer.com"
+            f"{currency}&amount={amount}"
+        )
         headers = {"apikey": API_KEY}
 
         try:
@@ -35,7 +39,7 @@ def convert_currency(transaction: dict) -> float:
             response.raise_for_status()
             result_data = response.json()
 
-            # Извлекаем итоговую сумму (в API от apilayer поле называется "result")
+            # Извлекаем итоговую сумму
             return float(result_data.get("result", 0.0))
         except (requests.RequestException, ValueError, KeyError):
             return 0.0
