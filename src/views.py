@@ -105,3 +105,40 @@ def generate_main_page(date_time_str: str, transactions: list) -> str:
     }
 
     return json.dumps(response_data, ensure_ascii=False, indent=4)
+
+
+def generate_events_page(date_time_str: str, transactions: list) -> str:
+    """
+    Формирует JSON-ответ для страницы 'События' (аналитика за текущий месяц).
+    """
+    logger.info(f"Генерация страницы События для даты: {date_time_str}")
+
+    dt = datetime.strptime(date_time_str, "%Y-%m-%d %H:%M:%S")
+    current_year = dt.year
+    current_month = dt.month
+
+    # Фильтруем транзакции только за указанный месяц и год
+    monthly_transactions = []
+    for t in transactions:
+        if t.get("Статус") != "OK" or not t.get("Дата операции"):
+            continue
+        try:
+            date_obj = datetime.strptime(str(t["Дата операции"]).split()[0], "%d.%m.%Y")
+            if date_obj.year == current_year and date_obj.month == current_month:
+                monthly_transactions.append(t)
+        except Exception:
+            continue
+
+    # Считаем общие расходы и поступления за месяц
+    total_expenses = sum(
+        abs(t.get("Сумма операции", 0)) for t in monthly_transactions if t.get("Сумма операции", 0) < 0)
+    total_income = sum(t.get("Сумma операции", 0) for t in monthly_transactions if t.get("Сумма операции", 0) > 0)
+
+    response_data = {
+        "period": f"{current_year}-{current_month:02d}",
+        "total_transactions_count": len(monthly_transactions),
+        "expenses_summary": round(total_expenses, 2),
+        "income_summary": round(total_income, 2)
+    }
+
+    return json.dumps(response_data, ensure_ascii=False, indent=4)
