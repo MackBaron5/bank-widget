@@ -51,7 +51,7 @@ def generate_main_page(date_time_str: str, transactions: list) -> str:
         greeting = "Доброй ночи"
 
     try:
-        with open("user_setting.json", "r", encoding="utf-8") as f:
+        with open("user_settings.json", "r", encoding="utf-8") as f:
             settings = json.load(f)
     except Exception:
         settings = {"user_currencies": ["USD", "EUR"], "user_stocks": ["AAPL", "AMZN", "GOOG", "MSFT", "TSLA"]}
