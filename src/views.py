@@ -132,7 +132,7 @@ def generate_events_page(date_time_str: str, transactions: list) -> str:
     # Считаем общие расходы и поступления за месяц
     total_expenses = sum(
         abs(t.get("Сумма операции", 0)) for t in monthly_transactions if t.get("Сумма операции", 0) < 0)
-    total_income = sum(t.get("Сумma операции", 0) for t in monthly_transactions if t.get("Сумма операции", 0) > 0)
+    total_income = sum(t.get("Сумма операции", 0) for t in monthly_transactions if t.get("Сумма операции", 0) > 0)
 
     response_data = {
         "period": f"{current_year}-{current_month:02d}",
