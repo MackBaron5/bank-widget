@@ -2,6 +2,7 @@ import json
 import logging
 from datetime import datetime
 import requests
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -26,11 +27,38 @@ def get_currency_rates(currencies: list) -> list:
 
 
 def get_stock_prices(stocks: list) -> list:
-    """Получает стоимости акций (заглушки согласно ТЗ)."""
+    """
+    Получает актуальную стоимость акций в реальном времени через API Alpha Vantage.
+    В случае сбоя или исчерпания лимитов API возвращает дефолтные значения.
+    """
     prices = []
+    # Читаем ключ из файла .env. Если файла нет, берем ваш новый ключ как запасной вариант
+    api_key = os.getenv("STOCK_API_KEY", "E66R8YKIQQC0ATPV")
+
+    # Дефолтные значения из ТЗ на случай непредвиденных ошибок API или отсутствия интернета
     stock_mock = {"AAPL": 150.12, "AMZN": 3173.18, "GOOG": 2742.39, "MSFT": 296.71, "TSLA": 1007.08}
+
     for stock in stocks:
-        prices.append({"stock": stock, "price": stock_mock.get(stock, 0.0)})
+        try:
+            # Используем официальный эндпоинт Alpha Vantage для получения текущей цены акции
+            url = f"https://alphavantage.co{stock}&apikey={api_key}"
+            response = requests.get(url, timeout=5)
+
+            if response.status_code == 200:
+                data = response.json().get("Global Quote", {})
+                price = data.get("05. price")
+
+                if price:
+                    prices.append({"stock": stock, "price": round(float(price), 2)})
+                    continue
+
+            # Если API вернуло ошибку или превышен лимит бесплатных запросов (5 в минуту)
+            prices.append({"stock": stock, "price": stock_mock.get(stock, 0.0)})
+
+        except Exception as e:
+            logger.error(f"Ошибка получения акций для {stock}: {e}")
+            prices.append({"stock": stock, "price": stock_mock.get(stock, 0.0)})
+
     return prices
 
 

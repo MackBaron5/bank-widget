@@ -4,6 +4,7 @@
 venv/
 .venv/
 env/
+.env
 __pycache__/
 report_*.xlsx
 *.log
