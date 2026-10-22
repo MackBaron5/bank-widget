@@ -1,7 +1,11 @@
 .idea/
-.flake8
-poetry.lock
-pyproject.toml
+.vscode/
 *.pyc
 venv/
 .venv/
+env/
+.env
+__pycache__/
+report_*.xlsx
+*.log
+project.log
